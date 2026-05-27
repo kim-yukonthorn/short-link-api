@@ -1,0 +1,38 @@
+// URL Shortener API — Prisma schema
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Link {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  destination String
+  title       String?
+  tags        String    @default("[]") // JSON-encoded array (SQLite has no native string[])
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  clicks      Click[]
+
+  @@index([createdAt])
+}
+
+model Click {
+  id        String   @id @default(cuid())
+  linkId    String
+  link      Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  timestamp DateTime @default(now())
+  referrer  String?
+  country   String?
+  device    String?
+  userAgent String?
+
+  @@index([linkId, timestamp])
+}

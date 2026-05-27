@@ -1,0 +1,78 @@
+### Short Link API — REST Client examples
+### Install the "REST Client" extension in VS Code, then click "Send Request" on each block.
+
+@base = http://localhost:3000
+
+### Create a link (auto-generated slug)
+POST {{base}}/links
+Content-Type: application/json
+
+{
+  "destination": "https://www.anthropic.com",
+  "title": "Anthropic",
+  "tags": ["ai", "docs"]
+}
+
+### Create a link with a custom slug
+POST {{base}}/links
+Content-Type: application/json
+
+{
+  "destination": "https://www.anthropic.com/claude",
+  "slug": "claude",
+  "title": "Claude product page",
+  "tags": ["ai", "product"]
+}
+
+### List all links
+GET {{base}}/links
+
+### List with filters
+GET {{base}}/links?tag=marketing&status=active&limit=5
+
+### Search
+GET {{base}}/links?search=google
+
+### Filter by date range
+GET {{base}}/links?from=2026-05-01&to=2026-05-31
+
+### Sort by clicks
+GET {{base}}/links?sort=clicks&order=desc&limit=5
+
+### Get one link
+GET {{base}}/links/google
+
+### Get analytics for one link
+GET {{base}}/links/google/analytics
+
+### Get raw clicks
+GET {{base}}/links/google/clicks?page=1&limit=10
+
+### Account summary
+GET {{base}}/stats/summary
+
+### Top 5 links by clicks (all time)
+GET {{base}}/stats/top?metric=clicks&period=all&limit=5
+
+### Most recent links
+GET {{base}}/stats/top?metric=recent&limit=5
+
+### Links expiring within 14 days
+GET {{base}}/links/expiring?within=14d
+
+### All tags
+GET {{base}}/tags
+
+### Update a link
+PATCH {{base}}/links/claude
+Content-Type: application/json
+
+{
+  "title": "Claude — updated"
+}
+
+### Delete a link
+DELETE {{base}}/links/claude
+
+### Follow a redirect
+GET {{base}}/r/google

@@ -1,0 +1,30 @@
+node_modules
+
+# Environment variables
+.env
+.env.local
+
+# Compiled output
+/dist
+/generated/prisma
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+
+# Tests
+/coverage
+
+# IDEs
+/.idea
+/.vscode
+
+# Database files
+*.db
+*.db-journal
+/prisma/*.db
+/prisma/*.db-journal
