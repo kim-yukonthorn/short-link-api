@@ -271,16 +271,29 @@ model Click {
 
 ## Deploying
 
-The app is a standard NestJS server with a SQLite database file. Any of these work:
+### Render (free forever) ⭐
 
-### Railway / Render / Fly.io
+A [`render.yaml`](./render.yaml) blueprint ships with the repo. One-click deploy:
 
-1. Push the repo to GitHub.
-2. Create a new service pointing at the repo.
-3. Build command: `npm install && npm run build && npx prisma migrate deploy`
-4. Start command: `node dist/main`
-5. Add env var `DATABASE_URL=file:./dev.db` (or swap to a hosted Postgres — see below).
-6. Optional: run the compiled seed script once to seed demo data.
+1. Push this repo to GitHub.
+2. Go to [dashboard.render.com](https://dashboard.render.com) → **New** → **Blueprint** → connect the repo.
+3. Render reads `render.yaml`, picks the free plan, and starts deploying. No manual config needed.
+
+You will get a URL like `https://short-link-api.onrender.com`.
+
+**About SQLite on the free plan**: the filesystem is ephemeral, so the database resets every time the service restarts (or wakes from idle). That's fine — the `startCommand` re-runs `prisma migrate deploy` and `db:seed` on every boot, so demo data is always present. Your shared short links will use auto-generated slugs that differ across restarts; the seed slugs (`google`, `github`, `demo`, etc.) stay stable.
+
+**Cold starts**: free instances sleep after ~15 minutes of inactivity. The first request after sleep takes ~30s to wake up — subsequent requests are fast.
+
+### Other platforms
+
+The app is a standard NestJS server. To deploy elsewhere:
+
+1. Build: `npm install && npm run build && npx prisma generate`
+2. Migrate: `npx prisma migrate deploy`
+3. Seed (optional): `npm run db:seed`
+4. Start: `node dist/main`
+5. Env: `DATABASE_URL=file:./dev.db` (SQLite) or swap to Postgres — see below.
 
 ### Switching to PostgreSQL
 

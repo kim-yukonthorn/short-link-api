@@ -1,0 +1,21 @@
+# Render Blueprint — one-click deploy
+# Docs: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: short-link-api
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    # --include=dev keeps prisma + ts-node available so we can run migrations
+    # and seed at start time (they live in devDependencies).
+    buildCommand: npm ci --include=dev && npx prisma generate && npm run build
+    # On free tier the filesystem is ephemeral, so we migrate + reseed on every start.
+    # That's intentional: the seed data IS the demo content for this API.
+    startCommand: npx prisma migrate deploy && npm run db:seed && node dist/main
+    envVars:
+      - key: DATABASE_URL
+        value: file:./dev.db
+      - key: NODE_ENV
+        value: production
+    healthCheckPath: /api/docs-json
